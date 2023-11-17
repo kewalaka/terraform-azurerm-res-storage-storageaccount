@@ -302,12 +302,6 @@ resource "azurerm_storage_account_network_rules" "this" {
     }
   }
 
-  lifecycle {
-    precondition {
-      condition     = var.private_endpoints == null || var.storage_account_network_rules.private_link_access == null
-      error_message = "Cannot set `private_link_access` when `var.private_endpoints` is not `null`."
-    }
-  }
 }
 
 resource "azurerm_storage_container" "this" {

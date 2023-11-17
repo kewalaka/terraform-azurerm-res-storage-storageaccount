@@ -126,7 +126,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
