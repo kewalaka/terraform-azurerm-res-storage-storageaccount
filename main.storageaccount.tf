@@ -100,7 +100,6 @@ resource "azurerm_storage_account" "this" {
   dynamic "identity" {
     for_each = var.managed_identities == {} ? [] : [var.managed_identities]
     content {
-      # this is an ugly long line, but needed to support the required AVM interface for identity.
       type         = identity.value.system_assigned && length(identity.value.user_assigned_resource_ids) > 0 ? "SystemAssigned, UserAssigned" : length(identity.value.user_assigned_resource_ids) > 0 ? "UserAssigned" : "SystemAssigned"
       identity_ids = identity.value.user_assigned_resource_ids
     }
