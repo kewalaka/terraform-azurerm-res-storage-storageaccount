@@ -101,8 +101,8 @@ resource "azurerm_storage_account" "this" {
     for_each = var.managed_identities == null ? [] : [var.managed_identities]
     content {
       # this is an ugly long line, but needed to support the required AVM interface for identity.
-      type         = identity.value.system_assigned && length(identity.value.user_assigned_resource_ids) > 0 ? "SystemAssigned, UserAssigned" : identity.value.system_assigned ? "SystemAssigned" : identity.value.user_assigned_resource_ids != null ? "UserAssigned" : "None"
-      identity_ids = identity.value.user_assigned_resource_ids != null ? toset(identity.value.user_assigned_resource_ids) : toset([])
+      type         = identity.value.system_assigned && length(identity.value.user_assigned_resource_ids) > 0 ? "SystemAssigned, UserAssigned" : identity.value.system_assigned ? "SystemAssigned" : length(identity.value.user_assigned_resource_ids) > 0 ? "UserAssigned" : "None"
+      identity_ids = identity.value.user_assigned_resource_ids
     }
   }
   dynamic "immutability_policy" {
@@ -272,6 +272,7 @@ resource "azurerm_storage_account_local_user" "this" {
 }
 
 resource "azurerm_storage_account_network_rules" "this" {
+  count                      = var.storage_account_network_rules != null ? 1 : 0
   default_action             = var.storage_account_network_rules.default_action
   storage_account_id         = azurerm_storage_account.this.id
   bypass                     = var.storage_account_network_rules.bypass
