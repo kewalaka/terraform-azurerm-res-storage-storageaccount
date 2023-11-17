@@ -41,4 +41,13 @@ module "storage_account" {
   # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
   name                = module.naming.storage_account.name_unique
   resource_group_name = azurerm_resource_group.this.name
+
+  storage_account_account_replication_type = "LRS"
+  storage_account_account_tier             = "Standard"
+
+  storage_container = {
+    blob_container = {
+      name = module.naming.storage_container.name_unique
+    }
+  }
 }
