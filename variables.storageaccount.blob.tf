@@ -1,8 +1,8 @@
 variable "storage_container" {
   type = map(object({
-    container_access_type = optional(string)
-    metadata              = optional(map(string))
-    name                  = string
+    public_access = optional(string, "None")
+    metadata      = optional(map(string))
+    name          = string
 
     role_assignments = optional(map(object({
       role_definition_id_or_name             = string
@@ -23,7 +23,7 @@ variable "storage_container" {
   }))
   default     = {}
   description = <<-EOT
- - `container_access_type` - (Optional) The Access Level configured for this Container. Possible values are `blob`, `container` or `private`. Defaults to `private`.
+ - `container_access_type` - (Optional) The Access Level configured for this Container. Possible values are `Blob`, `Container` or `None`. Defaults to `None`.
  - `metadata` - (Optional) A mapping of MetaData for this Container. All metadata keys should be lowercase.
  - `name` - (Required) The name of the Container which should be created within the Storage Account. Changing this forces a new resource to be created.
 

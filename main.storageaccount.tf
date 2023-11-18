@@ -314,7 +314,7 @@ resource "azapi_resource" "storage_container" {
   body = jsonencode({
     properties = {
       metadata     = each.value.metadata
-      publicAccess = each.value.container_access_type
+      publicAccess = each.value.public_access
     }
   })
 
