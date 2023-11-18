@@ -16,8 +16,11 @@ variable "resource_group_name" {
 
 variable "location" {
   type        = string
-  description = "Azure region where the resource should be deployed.  If null, the location will be inferred from the resource group location."
   default     = null
+  description = <<DESCRIPTION
+Azure region where the resource should be deployed.  
+If null, the location will be inferred from the resource group location.
+DESCRIPTION
 }
 
 variable "name" {

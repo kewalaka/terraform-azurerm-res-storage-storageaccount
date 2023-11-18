@@ -134,7 +134,8 @@ Default: `false`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: Azure region where the resource should be deployed.  If null, the location will be inferred from the resource group location.
+Description: Azure region where the resource should be deployed.  
+If null, the location will be inferred from the resource group location.
 
 Type: `string`
 

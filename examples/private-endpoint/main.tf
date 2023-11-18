@@ -41,7 +41,7 @@ resource "azurerm_subnet" "this" {
 }
 
 locals {
-  endpoints = toset(["blob"])
+  endpoints = toset(["blob", "table"])
 }
 
 resource "azurerm_private_dns_zone" "this" {
