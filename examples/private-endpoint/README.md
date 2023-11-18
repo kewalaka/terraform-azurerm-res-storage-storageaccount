@@ -64,10 +64,11 @@ module "storage_account" {
   name                = module.naming.storage_account.name_unique
   resource_group_name = azurerm_resource_group.this.name
   private_endpoints = {
-    blob_endpoint = {
-      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this["blob"].id]
+    for endpoint in local.endpoints :
+    endpoint => {
       subnet_resource_id            = azurerm_subnet.this.id
-      subresource_name              = "blob"
+      subresource_name              = endpoint
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this[endpoint].id]
     }
   }
 }
