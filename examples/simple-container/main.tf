@@ -42,3 +42,7 @@ module "storage_account" {
     }
   }
 }
+
+output "storage_container" {
+  value = module.storage_account.storage_container
+}

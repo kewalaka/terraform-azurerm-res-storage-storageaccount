@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Simple container example
+# Private Endpoint example
 
-This deploys a storage account with a container.
+This illustrates the use of private endpoints
 
 ```hcl
 terraform {
@@ -32,19 +32,48 @@ resource "azurerm_resource_group" "this" {
   location = "AustraliaEast"
 }
 
+resource "azurerm_virtual_network" "this" {
+  name                = module.naming.virtual_network.name_unique
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
+}
+
+resource "azurerm_subnet" "this" {
+  name                 = module.naming.subnet.name_unique
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["192.168.0.0/24"]
+}
+
+locals {
+  endpoints = toset(["blob", "table"])
+}
+
+resource "azurerm_private_dns_zone" "this" {
+  for_each = local.endpoints
+
+  name                = "privatelink.${each.value}.core.windows.net"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
 # This is the module call
 module "storage_account" {
   source = "../../"
   # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
   name                = module.naming.storage_account.name_unique
   resource_group_name = azurerm_resource_group.this.name
-
-  storage_account_account_replication_type = "LRS"
-  storage_account_account_tier             = "Standard"
-
-  storage_container = {
-    blob_container = {
-      name = module.naming.storage_container.name_unique
+  private_endpoints = {
+    for endpoint in local.endpoints :
+    endpoint => {
+      # the name must be set to avoid conflicting resources.
+      name                          = "pe-${endpoint}-${module.naming.storage_account.name_unique}"
+      subnet_resource_id            = azurerm_subnet.this.id
+      subresource_name              = [endpoint]
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this[endpoint].id]
+      # these are optional but illustrate making well-aligned service connection & NIC names.
+      private_service_connection_name = "psc-${endpoint}-${module.naming.storage_account.name_unique}"
+      network_interface_name          = "nic-pe-${endpoint}-${module.naming.storage_account.name_unique}"
     }
   }
 }
@@ -69,7 +98,10 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
+- [azurerm_private_dns_zone.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
+- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
