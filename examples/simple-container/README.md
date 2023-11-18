@@ -48,6 +48,10 @@ module "storage_account" {
     }
   }
 }
+
+output "storage_container" {
+  value = module.storage_account.storage_container
+}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -82,7 +86,11 @@ No optional inputs.
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_storage_container"></a> [storage\_container](#output\_storage\_container)
+
+Description: n/a
 
 ## Modules
 
