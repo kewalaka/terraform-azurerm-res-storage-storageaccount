@@ -11,21 +11,21 @@ output "private_endpoints" {
 }
 
 output "storage_container" {
-  description = "Map of storage containers that created."
+  description = "Map of storage containers that are created."
   value = {
     for name, container in azapi_resource.storage_container :
     name => {
       id                    = container.id
       name                  = container.name
-      storage_account_name  = container.storage_account_name
-      container_access_type = container.container_access_type
-      metadata              = container.metadata
+      storage_account_name  = jsondecode(container.output).properties.storage_account_name
+      container_access_type = jsondecode(container.output).properties.container_access_type
+      metadata              = jsondecode(container.output).properties.metadata
     }
   }
 }
 
 output "storage_queue" {
-  description = "Map of storage queues that created."
+  description = "Map of storage queues that are created."
   value = {
     for name, queue in azurerm_storage_queue.this :
     name => {
@@ -38,7 +38,7 @@ output "storage_queue" {
 }
 
 output "storage_table" {
-  description = "Map of storage tables that created."
+  description = "Map of storage tables that are created."
   value = {
     for name, table in azurerm_storage_table.this : name => {
       id                   = table.id
