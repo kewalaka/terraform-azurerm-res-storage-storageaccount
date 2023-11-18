@@ -310,7 +310,7 @@ resource "azapi_resource" "storage_container" {
 
   type      = "Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01"
   name      = each.value.name
-  parent_id = azurerm_storage_account.this.id
+  parent_id = "${azurerm_storage_account.this.id}/blobServices/default"
   body = jsonencode({
     properties = {
       metadata     = each.value.metadata

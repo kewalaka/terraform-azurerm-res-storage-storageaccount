@@ -22,9 +22,9 @@ variable "storage_account_account_kind" {
 
 variable "storage_account_account_replication_type" {
   type        = string
-  description = "(Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`.  Defaults to `RAGZRS`"
+  description = "(Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`.  Defaults to `ZRS`"
   nullable    = false
-  default     = "RAGZRS"
+  default     = "ZRS"
 
   validation {
     condition     = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.storage_account_account_replication_type)
@@ -35,7 +35,7 @@ variable "storage_account_account_replication_type" {
 variable "storage_account_account_tier" {
   type        = string
   description = "(Required) Defines the Tier to use for this storage account. Valid options are `Standard` and `Premium`. For `BlockBlobStorage` and `FileStorage` accounts only `Premium` is valid. Changing this forces a new resource to be created."
-  default     = "Premium"
+  default     = "Standard"
   nullable    = false
 
   validation {

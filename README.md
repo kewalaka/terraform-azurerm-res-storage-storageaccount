@@ -273,11 +273,11 @@ Default: `"StorageV2"`
 
 ### <a name="input_storage_account_account_replication_type"></a> [storage\_account\_account\_replication\_type](#input\_storage\_account\_account\_replication\_type)
 
-Description: (Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`.  Defaults to `RAGZRS`
+Description: (Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`.  Defaults to `ZRS`
 
 Type: `string`
 
-Default: `"RAGZRS"`
+Default: `"ZRS"`
 
 ### <a name="input_storage_account_account_tier"></a> [storage\_account\_account\_tier](#input\_storage\_account\_account\_tier)
 
@@ -285,7 +285,7 @@ Description: (Required) Defines the Tier to use for this storage account. Valid 
 
 Type: `string`
 
-Default: `"Premium"`
+Default: `"Standard"`
 
 ### <a name="input_storage_account_allow_nested_items_to_be_public"></a> [storage\_account\_allow\_nested\_items\_to\_be\_public](#input\_storage\_account\_allow\_nested\_items\_to\_be\_public)
 
