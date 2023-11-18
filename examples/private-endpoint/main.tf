@@ -61,7 +61,7 @@ module "storage_account" {
     for endpoint in local.endpoints :
     endpoint => {
       subnet_resource_id            = azurerm_subnet.this.id
-      subresource_name              = endpoint
+      subresource_name              = [endpoint]
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this[endpoint].id]
     }
   }
