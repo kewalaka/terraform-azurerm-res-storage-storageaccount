@@ -1025,7 +1025,7 @@ Description: This is the full resource output for the Storage Account resource.
 
 ### <a name="output_storage_container"></a> [storage\_container](#output\_storage\_container)
 
-Description: Map of storage containers that are created.
+Description: n/a
 
 ### <a name="output_storage_queue"></a> [storage\_queue](#output\_storage\_queue)
 
