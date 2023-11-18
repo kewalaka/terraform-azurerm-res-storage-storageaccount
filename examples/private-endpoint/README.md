@@ -66,9 +66,14 @@ module "storage_account" {
   private_endpoints = {
     for endpoint in local.endpoints :
     endpoint => {
+      # the name must be set to avoid conflicting resources.
+      name                          = "pe-${endpoint}-${module.naming.storage_account.name_unique}"
       subnet_resource_id            = azurerm_subnet.this.id
       subresource_name              = [endpoint]
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this[endpoint].id]
+      # these are optional but illustrate making well-aligned service connection & NIC names.
+      private_service_connection_name = "psc-${endpoint}-${module.naming.storage_account.name_unique}"
+      network_interface_name          = "nic-pe-${endpoint}-${module.naming.storage_account.name_unique}"
     }
   }
 }
