@@ -1025,15 +1025,15 @@ Description: This is the full resource output for the Storage Account resource.
 
 ### <a name="output_storage_container"></a> [storage\_container](#output\_storage\_container)
 
-Description: Map of storage containers that created.
+Description: Map of storage containers that are created.
 
 ### <a name="output_storage_queue"></a> [storage\_queue](#output\_storage\_queue)
 
-Description: Map of storage queues that created.
+Description: Map of storage queues that are created.
 
 ### <a name="output_storage_table"></a> [storage\_table](#output\_storage\_table)
 
-Description: Map of storage tables that created.
+Description: Map of storage tables that are created.
 
 ## Modules
 
