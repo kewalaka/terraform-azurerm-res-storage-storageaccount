@@ -13,7 +13,7 @@ output "private_endpoints" {
 output "storage_container" {
   description = "Map of storage containers that created."
   value = {
-    for name, container in azurerm_storage_container.this :
+    for name, container in azapi_resource.storage_container :
     name => {
       id                    = container.id
       name                  = container.name

@@ -304,13 +304,19 @@ resource "azurerm_storage_account_network_rules" "this" {
 
 }
 
-resource "azurerm_storage_container" "this" {
+# This uses azapi in order to avoid having to grant data plane permissions 
+resource "azapi_resource" "storage_container" {
   for_each = var.storage_container
 
-  name                  = each.value.name
-  storage_account_name  = azurerm_storage_account.this.name
-  container_access_type = each.value.container_access_type
-  metadata              = each.value.metadata
+  type      = "Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01"
+  name      = each.value.name
+  parent_id = azurerm_storage_account.this.id
+  body = jsonencode({
+    properties = {
+      metadata     = each.value.metadata
+      publicAccess = each.value.container_access_type
+    }
+  })
 
   dynamic "timeouts" {
     for_each = each.value.timeouts == null ? [] : [each.value.timeouts]
@@ -358,7 +364,7 @@ resource "azurerm_storage_queue" "this" {
   }
 
   # We need to create these storage service in serialize otherwise we might meet dns issue
-  depends_on = [azurerm_storage_container.this]
+  depends_on = [azapi_resource.storage_container]
 }
 
 resource "azurerm_storage_table" "this" {
@@ -393,7 +399,7 @@ resource "azurerm_storage_table" "this" {
   }
 
   # We need to create these storage service in serialize otherwise we might meet dns issue
-  depends_on = [azurerm_storage_container.this, azurerm_storage_queue.this]
+  depends_on = [azapi_resource.storage_container, azurerm_storage_queue.this]
 }
 
 resource "azurerm_storage_share" "this" {
