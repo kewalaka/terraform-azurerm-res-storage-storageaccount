@@ -4,4 +4,4 @@ This is a Storage Account repo in the style of Azure Verified Modules (AVM), it 
 
 End to end tests run with each CI, this does an end to end deployment into Azure, along with resource tidy up.
 
-To find official modules, please visit: <https://aka.ms/akm>.
+To find official modules, please visit: <https://aka.ms/AVM>.

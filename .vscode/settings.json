@@ -15,5 +15,10 @@
       "source.formatAll.terraform": true
     },
   },
-  "git.enableCommitSigning": true
+  "git.enableCommitSigning": true,
+  "[terraform][terraform-vars]": {
+    "editor.codeActionsOnSave": {
+      "source.formatAll.terraform": "explicit"
+    }
+  }
 }
