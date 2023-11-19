@@ -18,7 +18,7 @@ output "storage_container" {
       id                   = container.id
       name                 = container.name
       storage_account_name = azurerm_storage_account.this.name
-      public_access        = jsondecode(container.body).properties.public_access
+      public_access        = jsondecode(container.body).properties.publicAccess
       metadata             = jsondecode(container.body).properties.metadata
     }
   }
