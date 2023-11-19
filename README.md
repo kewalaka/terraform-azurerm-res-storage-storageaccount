@@ -1,9 +1,15 @@
 <!-- BEGIN_TF_DOCS -->
 # terraform-azurerm-avm-res-storage-storageaccount
 
-This is a Storage Account repo in the style of Azure Verified Modules (AVM), it is an 'unofficial' example that has been used for learning AVM.
+This is a Storage Account repo in the style of Azure Verified Modules (AVM), it is an 'unofficial' example.
 
-End to end tests run with each CI, this does an end to end deployment into Azure, along with resource tidy up.
+This will be deprecated once the upstream resource from Microsoft is available, in the interim, PRs and feedback that align to the AVM specifications are welcome.
+
+GitHub Actions does an end to end deployment into Azure for each example, along with resource tidy up.  The following [examples](./examples) are available:
+
+- the default parameters
+- a storage account & container, deployed with access keys disabled
+- private endpoints (blob & table)
 
 To find official modules, please visit: <https://aka.ms/AVM>.
 
@@ -1028,7 +1034,7 @@ Description: This is the full resource output for the Storage Account resource.
 
 ### <a name="output_storage_container"></a> [storage\_container](#output\_storage\_container)
 
-Description: n/a
+Description: Map of storage containers that are created.
 
 ### <a name="output_storage_queue"></a> [storage\_queue](#output\_storage\_queue)
 

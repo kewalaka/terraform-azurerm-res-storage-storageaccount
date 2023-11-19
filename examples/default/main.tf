@@ -33,3 +33,8 @@ module "storage_account" {
   name                = module.naming.storage_account.name_unique
   resource_group_name = azurerm_resource_group.this.name
 }
+
+# illustrate what the outputs look like
+output "resource" {
+  value = module.this.resource
+}

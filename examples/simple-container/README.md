@@ -49,6 +49,7 @@ module "storage_account" {
   }
 }
 
+# illustrate what the outputs look like
 output "storage_container" {
   value = module.storage_account.storage_container
 }
@@ -90,7 +91,7 @@ The following outputs are exported:
 
 ### <a name="output_storage_container"></a> [storage\_container](#output\_storage\_container)
 
-Description: n/a
+Description: illustrate what the outputs look like
 
 ## Modules
 

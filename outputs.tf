@@ -10,22 +10,18 @@ output "private_endpoints" {
   description = "A map of private endpoints. The map key is the supplied input to var.private_endpoints. The map value is the entire azurerm_private_endpoint resource."
 }
 
-# output "storage_container" {
-#   description = "Map of storage containers that are created."
-#   value = {
-#     for name, container in azapi_resource.storage_container :
-#     name => {
-#       id                    = container.id
-#       name                  = container.name
-#       storage_account_name  = jsondecode(container).properties.storage_account_name
-#       container_access_type = jsondecode(container).properties.container_access_type
-#       metadata              = jsondecode(container).properties.metadata
-#     }
-#   }
-# }
-
 output "storage_container" {
-  value = azapi_resource.storage_container
+  description = "Map of storage containers that are created."
+  value = {
+    for name, container in azapi_resource.storage_container :
+    name => {
+      id                    = container.id
+      name                  = container.name
+      storage_account_name  = azurerm_storage_account.this.name
+      container_access_type = jsondecode(container.body).properties.container_access_type
+      metadata              = jsondecode(container.body).properties.metadata
+    }
+  }
 }
 
 output "storage_queue" {
