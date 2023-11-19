@@ -42,7 +42,7 @@ module "storage_account" {
 
 # illustrate what the outputs look like
 output "resource" {
-  value = module.this.resource
+  value = module.storage_account.resource
 }
 ```
 
