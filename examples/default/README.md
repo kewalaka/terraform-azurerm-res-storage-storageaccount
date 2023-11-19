@@ -39,6 +39,12 @@ module "storage_account" {
   name                = module.naming.storage_account.name_unique
   resource_group_name = azurerm_resource_group.this.name
 }
+
+# illustrate what the outputs look like
+output "resource_id" {
+  description = "Example illustrating how to fetch the resource id."
+  value       = module.storage_account.resource.id
+}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -73,7 +79,11 @@ No optional inputs.
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
+
+Description: Example illustrating how to fetch the resource id.
 
 ## Modules
 
