@@ -41,8 +41,9 @@ module "storage_account" {
 }
 
 # illustrate what the outputs look like
-output "resource" {
-  value = module.storage_account.resource
+output "resource_id" {
+  description = "Example illustrating how to fetch the resource id."
+  value       = module.storage_account.resource.id
 }
 ```
 
@@ -80,9 +81,9 @@ No optional inputs.
 
 The following outputs are exported:
 
-### <a name="output_resource"></a> [resource](#output\_resource)
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
-Description: illustrate what the outputs look like
+Description: Example illustrating how to fetch the resource id.
 
 ## Modules
 
