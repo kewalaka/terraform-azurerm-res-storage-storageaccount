@@ -375,19 +375,6 @@ resource "azurerm_storage_account_customer_managed_key" "this" {
   key_version               = var.customer_managed_key.key_version
   user_assigned_identity_id = var.managed_identities.user_assigned_resource_ids[each.value]
 
-  # return to this as the AVM spec doesn't have timeouts in the CMK declaration
-  # dynamic "timeouts" {
-  #   for_each = var.customer_managed_key.timeouts == null ? [] : [
-  #     var.customer_managed_key.timeouts
-  #   ]
-  #   content {
-  #     create = timeouts.value.create
-  #     delete = timeouts.value.delete
-  #     read   = timeouts.value.read
-  #     update = timeouts.value.update
-  #   }
-  # }
-
   depends_on = [azurerm_key_vault_access_policy.this]
 
   lifecycle {
