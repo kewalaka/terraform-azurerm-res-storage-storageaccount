@@ -27,7 +27,7 @@ jobs:
 
   testexamples:
     if: github.event.repository.name != 'terraform-azurerm-avm-template'
-    runs-on: ubuntu-latest
+    runs-on: ${{ (vars.AVM_USE_CLOUD_RUNNER) && 'ubuntu-latest' || '[self-hosted, 1ES.Pool=terraform-azurerm-avm-res-storage-storageaccount]' }}
     needs: getexamples
     environment: test
     env:
@@ -39,7 +39,7 @@ jobs:
       max-parallel: 5
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
 
       - name: Set up Azure CLI and login
         if: ${{ vars.AVM_USE_CLOUD_RUNNER == '' }}
@@ -57,7 +57,7 @@ jobs:
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/src -w /src --network=host -e TF_IN_AUTOMATION -e TF_VAR_enable_telemetry -e AVM_MOD_PATH=/src -e AVM_EXAMPLE=${{ matrix.example }} -e MSI_ID -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USE_MSI=true mcr.microsoft.com/azterraform:latest make test-example
 
       - name: Set up Azure CLI and login
-        if: ${{ vars.AVM_USE_CLOUD_RUNNER == 'true' }}
+        if: ${{ vars.AVM_USE_CLOUD_RUNNER }}
         uses: Azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -65,7 +65,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Test example
-        if: ${{ vars.AVM_USE_CLOUD_RUNNER == 'true' }}
+        if: ${{ vars.AVM_USE_CLOUD_RUNNER }}
         uses: Azure/terraform-azurerm-avm-template/.github/actions/e2e-testexamples@main
         with:
           example: ${{ matrix.example }}
