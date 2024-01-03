@@ -1,68 +1,68 @@
-variable "storage_account_access_tier" {
+variable "access_tier" {
   type        = string
   default     = "Hot"
   description = "(Optional) Defines the access tier for `BlobStorage`, `FileStorage` and `StorageV2` accounts. Valid options are `Hot` and `Cool`, defaults to `Hot`."
 
   validation {
-    condition     = contains(["Hot", "Cool"], var.storage_account_access_tier)
+    condition     = contains(["Hot", "Cool"], var.access_tier)
     error_message = "Invalid value for access tier. Valid options are 'Hot' or 'Cool'."
   }
 }
 
-variable "storage_account_account_kind" {
+variable "account_kind" {
   type        = string
   default     = "StorageV2"
   description = "(Optional) Defines the Kind of account. Valid options are `BlobStorage`, `BlockBlobStorage`, `FileStorage`, `Storage` and `StorageV2`. Defaults to `StorageV2`."
 
   validation {
-    condition     = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.storage_account_account_kind)
+    condition     = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.account_kind)
     error_message = "Invalid value for account kind. Valid options are `BlobStorage`, `BlockBlobStorage`, `FileStorage`, `Storage` and `StorageV2`. Defaults to `StorageV2`."
   }
 }
 
-variable "storage_account_account_replication_type" {
+variable "account_replication_type" {
   type        = string
   description = "(Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`.  Defaults to `ZRS`"
   nullable    = false
   default     = "ZRS"
 
   validation {
-    condition     = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.storage_account_account_replication_type)
+    condition     = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.account_replication_type)
     error_message = "Invalid value for replication type. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`."
   }
 }
 
-variable "storage_account_account_tier" {
+variable "account_tier" {
   type        = string
   description = "(Required) Defines the Tier to use for this storage account. Valid options are `Standard` and `Premium`. For `BlockBlobStorage` and `FileStorage` accounts only `Premium` is valid. Changing this forces a new resource to be created."
   default     = "Standard"
   nullable    = false
 
   validation {
-    condition     = contains(["Standard", "Premium"], var.storage_account_account_tier)
+    condition     = contains(["Standard", "Premium"], var.account_tier)
     error_message = "Invalid value for account tier. Valid options are `Standard` and `Premium`. For `BlockBlobStorage` and `FileStorage` accounts only `Premium` is valid. Changing this forces a new resource to be created."
   }
 }
 
-variable "storage_account_allow_nested_items_to_be_public" {
+variable "allow_nested_items_to_be_public" {
   type        = bool
   default     = false
   description = "(Optional) Allow or disallow nested items within this Account to opt into being public. Defaults to `false`."
 }
 
-variable "storage_account_allowed_copy_scope" {
+variable "allowed_copy_scope" {
   type        = string
   default     = null
   description = "(Optional) Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet. Possible values are `AAD` and `PrivateLink`."
 }
 
-variable "storage_account_cross_tenant_replication_enabled" {
+variable "cross_tenant_replication_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Should cross Tenant replication be enabled? Defaults to `false`."
 }
 
-variable "storage_account_custom_domain" {
+variable "custom_domain" {
   type = object({
     name          = string
     use_subdomain = optional(bool)
@@ -74,31 +74,31 @@ variable "storage_account_custom_domain" {
 EOT
 }
 
-variable "storage_account_default_to_oauth_authentication" {
+variable "default_to_oauth_authentication" {
   type        = bool
   default     = null
   description = "(Optional) Default to Azure Active Directory authorization in the Azure portal when accessing the Storage Account. The default value is `false`"
 }
 
-variable "storage_account_edge_zone" {
+variable "edge_zone" {
   type        = string
   default     = null
   description = "(Optional) Specifies the Edge Zone within the Azure Region where this Storage Account should exist. Changing this forces a new Storage Account to be created."
 }
 
-variable "storage_account_enable_https_traffic_only" {
+variable "enable_https_traffic_only" {
   type        = bool
   default     = true
   description = "(Optional) Boolean flag which forces HTTPS if enabled, see [here](https://docs.microsoft.com/azure/storage/storage-require-secure-transfer/) for more information. Defaults to `true`."
 }
 
-variable "storage_account_infrastructure_encryption_enabled" {
+variable "infrastructure_encryption_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Is infrastructure encryption enabled? Changing this forces a new resource to be created. Defaults to `false`."
 }
 
-variable "storage_account_local_user" {
+variable "local_user" {
   type = map(object({
     home_directory       = optional(string)
     name                 = string
@@ -161,13 +161,13 @@ EOT
   nullable    = false
 }
 
-variable "storage_account_min_tls_version" {
+variable "min_tls_version" {
   type        = string
   default     = "TLS1_2"
   description = "(Optional) The minimum supported TLS version for the storage account. Possible values are `TLS1_0`, `TLS1_1`, and `TLS1_2`. Defaults to `TLS1_2` for new storage accounts."
 }
 
-variable "storage_account_network_rules" {
+variable "network_rules" {
   type = object({
     bypass                     = optional(set(string), ["Logging", "Metrics", "AzureServices"])
     default_action             = optional(string, "Deny")
@@ -207,19 +207,19 @@ variable "storage_account_network_rules" {
 EOT
 }
 
-variable "storage_account_nfsv3_enabled" {
+variable "nfsv3_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Is NFSv3 protocol enabled? Changing this forces a new resource to be created. Defaults to `false`."
 }
 
-variable "storage_account_public_network_access_enabled" {
+variable "public_network_access_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Whether the public network access is enabled? Defaults to `false`."
 }
 
-variable "storage_account_routing" {
+variable "routing" {
   type = object({
     choice                      = optional(string, "MicrosoftRouting")
     publish_internet_endpoints  = optional(bool, false)
@@ -233,7 +233,7 @@ variable "storage_account_routing" {
 EOT
 }
 
-variable "storage_account_sas_policy" {
+variable "sas_policy" {
   type = object({
     expiration_action = optional(string, "Log")
     expiration_period = string
@@ -245,19 +245,19 @@ variable "storage_account_sas_policy" {
 EOT
 }
 
-variable "storage_account_sftp_enabled" {
+variable "sftp_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Boolean, enable SFTP for the storage account.  Defaults to `false`."
 }
 
-variable "storage_account_shared_access_key_enabled" {
+variable "shared_access_key_enabled" {
   type        = bool
   default     = false
   description = "(Optional) Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is `false`."
 }
 
-variable "storage_account_static_website" {
+variable "static_website" {
   type = object({
     error_404_document = optional(string)
     index_document     = optional(string)
@@ -269,7 +269,7 @@ variable "storage_account_static_website" {
 EOT
 }
 
-variable "storage_account_timeouts" {
+variable "timeouts" {
   type = object({
     create = optional(string)
     delete = optional(string)
@@ -283,4 +283,38 @@ variable "storage_account_timeouts" {
  - `read` - (Defaults to 5 minutes) Used when retrieving the Storage Account.
  - `update` - (Defaults to 60 minutes) Used when updating the Storage Account.
 EOT
+}
+
+variable "key_vault_access_policy" {
+  type = map(object({
+    key_permissions = optional(list(string), [
+      "Get",
+      "UnwrapKey",
+      "WrapKey"
+    ])
+    identity_principle_id = string
+    identity_tenant_id    = string
+    timeouts = optional(object({
+      create = optional(string)
+      delete = optional(string)
+      read   = optional(string)
+      update = optional(string)
+    }))
+  }))
+  default     = {}
+  description = <<-EOT
+ Since storage account's customer managed key might require key vault permission, you can create the corresponding permission by setting this variable.
+
+ - `key_permissions` - (Optional) A map of list of key permissions, key is user assigned identity id, the element in value list must be one or more from the following: `Backup`, `Create`, `Decrypt`, Delete, `Encrypt`, `Get`, `Import`, `List`, `Purge`, `Recover`, `Restore`, `Sign`, `UnwrapKey`, `Update`, `Verify`, `WrapKey`, `Release`, `Rotate`, `GetRotationPolicy` and `SetRotationPolicy`. Defaults to `["Get", "UnwrapKey", "WrapKey"]`
+ - `identity_principle_id` - (Required) The principal ID of managed identity. Changing this forces a new resource to be created.
+ - `identity_tenant_id` - (Required) The tenant ID of managed identity. Changing this forces a new resource to be created.
+
+ ---
+ `timeouts` block supports the following:
+ - `create` - (Defaults to 30 minutes) Used when creating the Key Vault Access Policy.
+ - `delete` - (Defaults to 30 minutes) Used when deleting the Key Vault Access Policy.
+ - `read` - (Defaults to 5 minutes) Used when retrieving the Key Vault Access Policy.
+ - `update` - (Defaults to 30 minutes) Used when updating the Key Vault Access Policy.
+EOT
+  nullable    = false
 }

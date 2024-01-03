@@ -1,4 +1,4 @@
-variable "storage_share" {
+variable "shares" {
   type = map(object({
     access_tier      = optional(string)
     enabled_protocol = optional(string)
@@ -48,7 +48,7 @@ EOT
   nullable    = false
 }
 
-variable "storage_account_share_properties" {
+variable "share_properties" {
   type = object({
     cors_rule = optional(list(object({
       allowed_headers    = list(string)
@@ -57,6 +57,18 @@ variable "storage_account_share_properties" {
       exposed_headers    = list(string)
       max_age_in_seconds = number
     })))
+    diagnostic_settings = optional(map(object({
+      name                                     = optional(string, null)
+      log_categories                           = optional(set(string), [])
+      log_groups                               = optional(set(string), ["allLogs"])
+      metric_categories                        = optional(set(string), ["AllMetrics"])
+      log_analytics_destination_type           = optional(string, "Dedicated")
+      workspace_resource_id                    = optional(string, null)
+      resource_id                              = optional(string, null)
+      event_hub_authorization_rule_resource_id = optional(string, null)
+      event_hub_name                           = optional(string, null)
+      marketplace_partner_resource_id          = optional(string, null)
+    })), {})
     retention_policy = optional(object({
       days = optional(number)
     }))
@@ -80,8 +92,21 @@ variable "storage_account_share_properties" {
  - `max_age_in_seconds` - (Required) The number of seconds the client should cache a preflight response.
 
  ---
+ `diagnostic_settings` block supports the following:
+ - `name` - (Optional) The name of the diagnostic setting. Defaults to `null`.
+ - `log_categories` - (Optional) A set of log categories to enable. Defaults to an empty set.
+ - `log_groups` - (Optional) A set of log groups to enable. Defaults to `["allLogs"]`.
+ - `metric_categories` - (Optional) A set of metric categories to enable. Defaults to `["AllMetrics"]`.
+ - `log_analytics_destination_type` - (Optional) The destination type for log analytics. Defaults to `"Dedicated"`.
+ - `workspace_resource_id` - (Optional) The resource ID of the Log Analytics workspace. Defaults to `null`.
+ - `resource_id` - (Optional) The resource ID of the target resource for diagnostics. Defaults to `null`.
+ - `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the Event Hub authorization rule. Defaults to `null`.
+ - `event_hub_name` - (Optional) The name of the Event Hub. Defaults to `null`.
+ - `marketplace_partner_resource_id` - (Optional) The resource ID of the marketplace partner. Defaults to `null`.
+
+ ---
  `retention_policy` block supports the following:
- - `days` - (Optional) Specifies the number of days that the `azurerm_storage_share` should be retained, between `1` and `365` days. Defaults to `7`.
+ - `days` - (Optional) Specifies the number of days that the `azurerm_shares` should be retained, between `1` and `365` days. Defaults to `7`.
 
  ---
  `smb` block supports the following:
@@ -93,13 +118,13 @@ variable "storage_account_share_properties" {
 EOT
 }
 
-variable "storage_account_large_file_share_enabled" {
+variable "large_file_share_enabled" {
   type        = bool
   default     = null
   description = "(Optional) Is Large File Share Enabled?"
 }
 
-variable "storage_account_azure_files_authentication" {
+variable "azure_files_authentication" {
   type = object({
     directory_type = string
     active_directory = optional(object({

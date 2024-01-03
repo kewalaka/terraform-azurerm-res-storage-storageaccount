@@ -1,6 +1,6 @@
 
 
-variable "storage_table" {
+variable "tables" {
   type = map(object({
     name = string
     acl = optional(set(object({
@@ -42,7 +42,7 @@ EOT
   nullable    = false
 }
 
-variable "storage_account_table_encryption_key_type" {
+variable "table_encryption_key_type" {
   type        = string
   default     = null
   description = "(Optional) The encryption type of the table service. Possible values are `Service` and `Account`. Changing this forces a new resource to be created. Default value is `Service`."
