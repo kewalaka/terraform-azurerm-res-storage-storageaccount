@@ -4,6 +4,35 @@
 This illustrates the use of private endpoints
 
 ```hcl
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 3.63.0, < 4.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.3.2, < 4.0"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4.1, < 4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+  skip_provider_registration = true
+  storage_use_azuread        = false
+}
+
 resource "random_string" "this" {
   length  = 6
   special = false
@@ -141,13 +170,13 @@ module "storage_account" {
 resource "azurerm_log_analytics_storage_insights" "this" {
   name                 = "si-${module.naming.log_analytics_workspace.name_unique}"
   resource_group_name  = azurerm_resource_group.this.name
-  storage_account_id   = module.this.id
-  storage_account_key  = module.this.resource.primary_access_key
+  storage_account_id   = module.storage_account.id
+  storage_account_key  = module.storage_account.resource.primary_access_key
   workspace_id         = azurerm_log_analytics_workspace.this.id
-  blob_container_names = [for c in module.this.containers : c.name]
-  table_names          = [for t in module.this.tables : t.name]
+  blob_container_names = [for c in module.storage_account.containers : c.name]
+  table_names          = [for t in module.storage_account.tables : t.name]
 
-  depends_on = [module.this]
+  depends_on = [module.storage_account]
 }
 ```
 
