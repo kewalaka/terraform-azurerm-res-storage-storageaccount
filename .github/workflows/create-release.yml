@@ -1,9 +1,12 @@
+---
+name: create-release
+
 on:
+  workflow_dispatch:
   push:
     tags:
       - '*'
 
-name: Release to terraform public registry
 jobs:
   Release:
     name: Release
