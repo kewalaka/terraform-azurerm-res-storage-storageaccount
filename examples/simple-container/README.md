@@ -30,13 +30,11 @@ module "naming" {
   version = "0.4.0"
 }
 
-# This is required for resource modules
 resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
   location = "AustraliaEast"
 }
 
-# This is the module call
 module "storage_account" {
   source = "../../"
   # source             = "Azure/avm-<res/ptn>-<name>/azurerm"

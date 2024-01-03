@@ -8,11 +8,11 @@ resource "azurerm_log_analytics_workspace" "this" {
 resource "azurerm_log_analytics_storage_insights" "this" {
   name                 = "si-${module.naming.log_analytics_workspace.name_unique}"
   resource_group_name  = azurerm_resource_group.this.name
-  storage_account_id   = module.this.id
-  storage_account_key  = module.this.resource.primary_access_key
+  storage_account_id   = module.storage_account.id
+  storage_account_key  = module.storage_account.resource.primary_access_key
   workspace_id         = azurerm_log_analytics_workspace.this.id
-  blob_container_names = [for c in module.this.containers : c.name]
-  table_names          = [for t in module.this.tables : t.name]
+  blob_container_names = [for c in module.storage_account.containers : c.name]
+  table_names          = [for t in module.storage_account.tables : t.name]
 
-  depends_on = [module.this]
+  depends_on = [module.storage_account]
 }

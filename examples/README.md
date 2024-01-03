@@ -5,9 +5,9 @@ This module is for the Azure storage account.  The following examples illustrate
 |Example |Description|
 |--|--|
 | [default](./default/) | Create a storage account using the default parameters in this module. |
-| [diagnostic-settings](./database/) | Creates storage blobs, queues, shares & tables, along with per sub-resource diagnostic settings. |
+| [diagnostic-settings](./diagnostic-settings/) | Creates storage blobs, queues, shares & tables, along with per sub-resource diagnostic settings. |
 | [private_endpoint](./private_endpoint/) | Storage account with multiple private endpoints for different sub-resources (blob, queue, and table). |
-| [simple-container](./database_with_existing_server/) | A simple example illustrating a storage account and one blob container. |
+| [simple-container](./simple-container/) | A simple example illustrating a storage account and one blob container. |
 
 ## Contributing new examples
 

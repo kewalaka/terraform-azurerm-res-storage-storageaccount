@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.3.2, < 4.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4.1, < 4.0"
+    }
   }
 }
 
@@ -31,7 +35,6 @@ provider "azurerm" {
 
 resource "random_pet" "this" {
   length = 1
-
 }
 
 resource "azurerm_resource_group" "this" {
@@ -56,20 +59,16 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-module "this" {
-  #checkov:skip=CKV_AZURE_34:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV_AZURE_35:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_20:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_21:It's a known issue that Checkov cannot work prefect along with module
+module "storage_account" {
   source = "../.."
+  # source  = "kewalaka/res-storage-storageaccount/azurerm"
+  # version = "0.1.0"
 
   account_replication_type      = "LRS"
   account_tier                  = "Standard"
   account_kind                  = "StorageV2"
-  location                      = azurerm_resource_group.this.location
   name                          = module.naming.storage_account.name_unique
   resource_group_name           = azurerm_resource_group.this.name
-  min_tls_version               = "TLS1_2"
   shared_access_key_enabled     = true
   public_network_access_enabled = true
 
@@ -93,8 +92,8 @@ module "this" {
     type = "UserAssigned"
   }
   customer_managed_key = {
-    key_name     = azurerm_key_vault_key.storage_key.name
-    key_vault_id = azurerm_key_vault.storage_vault.id
+    key_name              = azurerm_key_vault_key.storage_key.name
+    key_vault_resource_id = azurerm_key_vault.storage_vault.id
   }
   containers = {
     blob_container1 = {
@@ -185,6 +184,8 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.63.0, < 4.0)
 
+- <a name="requirement_http"></a> [http](#requirement\_http) (>= 3.4.1, < 4.0)
+
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.3.2, < 4.0)
 
 ## Providers
@@ -192,6 +193,8 @@ The following requirements are needed by this module:
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.63.0, < 4.0)
+
+- <a name="provider_http"></a> [http](#provider\_http) (>= 3.4.1, < 4.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.3.2, < 4.0)
 
@@ -207,9 +210,9 @@ The following resources are used by this module:
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
 - [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
-- [random_string.key_vault_prefix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
 - [random_string.table_acl_id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
 - [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
+- [http_http.ip](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -250,13 +253,7 @@ Source: Azure/naming/azurerm
 
 Version: 0.4.0
 
-### <a name="module_public_ip"></a> [public\_ip](#module\_public\_ip)
-
-Source: lonegunmanb/public-ip/lonegunmanb
-
-Version: 0.1.0
-
-### <a name="module_this"></a> [this](#module\_this)
+### <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account)
 
 Source: ../..
 

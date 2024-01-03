@@ -42,14 +42,14 @@ variable "tags" {
 # required AVM interfaces
 variable "customer_managed_key" {
   type = object({
-    key_vault_resource_id              = optional(string, null)
-    key_name                           = optional(string, null)
+    key_vault_resource_id              = string
+    key_name                           = string
     key_version                        = optional(string, null)
     user_assigned_identity_resource_id = optional(string, null)
   })
-  default     = {}
+  default     = null
   description = <<DESCRIPTION
-  A set of configurations for customer-managed keys in Azure Key Vault. This variable allows you to specify the details of a customer-managed key to be used for encryption in various Azure services.
+  This variable allows you to specify the details of a customer-managed key to be used for encryption.
 
   - `key_vault_resource_id` - (Required) The resource ID of the Azure Key Vault containing the customer-managed key.
   - `key_name` - (Required) The name of the customer-managed key in the Azure Key Vault.

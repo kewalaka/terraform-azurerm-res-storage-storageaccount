@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.3.2, < 4.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4.1, < 4.0"
+    }
   }
 }
 
@@ -91,11 +95,8 @@ locals {
   endpoints = toset(["blob", "queue", "table"])
 }
 
-module "public_ip" {
-  count = var.bypass_ip_cidr == null ? 1 : 0
-
-  source  = "lonegunmanb/public-ip/lonegunmanb"
-  version = "0.1.0"
+data "http" "ip" {
+  url = "https://ifconfig.me/ip"
 }
 
 resource "azurerm_private_dns_zone" "this" {
@@ -105,11 +106,7 @@ resource "azurerm_private_dns_zone" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-module "this" {
-  #checkov:skip=CKV_AZURE_34:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV_AZURE_35:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_20:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_21:It's a known issue that Checkov cannot work prefect along with module
+module "storage_account" {
   source = "../.."
 
   account_replication_type      = "LRS"
@@ -118,17 +115,15 @@ module "this" {
   location                      = azurerm_resource_group.this.location
   name                          = module.naming.storage_account.name_unique
   resource_group_name           = azurerm_resource_group.this.name
-  min_tls_version               = "TLS1_2"
   shared_access_key_enabled     = true
   public_network_access_enabled = true
 
-  # TODO re-introduce once the rest is working
-  # network_rules = {
-  #   bypass                     = ["AzureServices"]
-  #   default_action             = "Deny"
-  #   ip_rules                   = [try(module.public_ip[0].public_ip, var.bypass_ip_cidr)]
-  #   virtual_network_subnet_ids = toset([azurerm_subnet.private.id])
-  # }
+  network_rules = {
+    bypass                     = ["AzureServices"]
+    default_action             = "Deny"
+    ip_rules                   = [data.http.ip.response_body]
+    virtual_network_subnet_ids = toset([azurerm_subnet.private.id])
+  }
   containers = {
     blob_container0 = {
       name                  = "blob-container-${random_string.this.result}-0"
@@ -175,13 +170,13 @@ module "this" {
 resource "azurerm_log_analytics_storage_insights" "this" {
   name                 = "si-${module.naming.log_analytics_workspace.name_unique}"
   resource_group_name  = azurerm_resource_group.this.name
-  storage_account_id   = module.this.id
-  storage_account_key  = module.this.resource.primary_access_key
+  storage_account_id   = module.storage_account.id
+  storage_account_key  = module.storage_account.resource.primary_access_key
   workspace_id         = azurerm_log_analytics_workspace.this.id
-  blob_container_names = [for c in module.this.containers : c.name]
-  table_names          = [for t in module.this.tables : t.name]
+  blob_container_names = [for c in module.storage_account.containers : c.name]
+  table_names          = [for t in module.storage_account.tables : t.name]
 
-  depends_on = [module.this]
+  depends_on = [module.storage_account]
 }
 ```
 
@@ -194,6 +189,8 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.63.0, < 4.0)
 
+- <a name="requirement_http"></a> [http](#requirement\_http) (>= 3.4.1, < 4.0)
+
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.3.2, < 4.0)
 
 ## Providers
@@ -201,6 +198,8 @@ The following requirements are needed by this module:
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.63.0, < 4.0)
+
+- <a name="provider_http"></a> [http](#provider\_http) (>= 3.4.1, < 4.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.3.2, < 4.0)
 
@@ -218,6 +217,7 @@ The following resources are used by this module:
 - [azurerm_subnet_network_security_group_association.private](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) (resource)
 - [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [random_string.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
+- [http_http.ip](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -226,15 +226,7 @@ No required inputs.
 
 ## Optional Inputs
 
-The following input variables are optional (have default values):
-
-### <a name="input_bypass_ip_cidr"></a> [bypass\_ip\_cidr](#input\_bypass\_ip\_cidr)
-
-Description: n/a
-
-Type: `string`
-
-Default: `null`
+No optional inputs.
 
 ## Outputs
 
@@ -250,13 +242,7 @@ Source: Azure/naming/azurerm
 
 Version: 0.4.0
 
-### <a name="module_public_ip"></a> [public\_ip](#module\_public\_ip)
-
-Source: lonegunmanb/public-ip/lonegunmanb
-
-Version: 0.1.0
-
-### <a name="module_this"></a> [this](#module\_this)
+### <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account)
 
 Source: ../..
 

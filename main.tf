@@ -1,8 +1,7 @@
-data "azurerm_client_config" "this" {}
-
 data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }
+
 resource "azurerm_storage_account" "this" {
   account_replication_type          = var.account_replication_type
   account_tier                      = var.account_tier
@@ -291,15 +290,6 @@ resource "azurerm_storage_account_network_rules" "this" {
     }
   }
 
-  dynamic "private_link_access" {
-    for_each = var.private_endpoints == null ? [] : local.private_endpoints
-    content {
-      endpoint_resource_id = azurerm_private_endpoint.this[private_link_access.value].id
-      endpoint_tenant_id   = data.azurerm_client_config.this.tenant_id
-    }
-
-  }
-
   dynamic "timeouts" {
     for_each = var.network_rules.timeouts == null ? [] : [var.network_rules.timeouts]
     content {
@@ -382,19 +372,6 @@ resource "azurerm_storage_account_customer_managed_key" "this" {
   storage_account_id        = azurerm_storage_account.this.id
   key_version               = var.customer_managed_key.key_version
   user_assigned_identity_id = var.managed_identities.user_assigned_resource_ids[each.value]
-
-  # return to this as the AVM spec doesn't have timeouts in the CMK declaration
-  # dynamic "timeouts" {
-  #   for_each = var.customer_managed_key.timeouts == null ? [] : [
-  #     var.customer_managed_key.timeouts
-  #   ]
-  #   content {
-  #     create = timeouts.value.create
-  #     delete = timeouts.value.delete
-  #     read   = timeouts.value.read
-  #     update = timeouts.value.update
-  #   }
-  # }
 
   depends_on = [azurerm_key_vault_access_policy.this]
 
