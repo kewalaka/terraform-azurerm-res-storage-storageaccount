@@ -121,15 +121,6 @@ module "this" {
       name = "queue-${random_pet.this.id}-3"
     }
   }
-  tables = {
-    table0 = {
-      name = "table${random_pet.this.id}a"
-    }
-    table1 = {
-      name = "table${random_pet.this.id}b"
-    }
-
-  }
   shares = {
     share1 = {
       name  = "share-${random_pet.this.id}-1"
@@ -138,6 +129,15 @@ module "this" {
     share2 = {
       name  = "share-${random_pet.this.id}-2"
       quota = 50
+    }
+  }
+
+  tables = {
+    table0 = {
+      name = "table${random_pet.this.id}a"
+    }
+    table1 = {
+      name = "table${random_pet.this.id}b"
     }
   }
 
