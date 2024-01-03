@@ -292,15 +292,6 @@ resource "azurerm_storage_account_network_rules" "this" {
     }
   }
 
-  dynamic "private_link_access" {
-    for_each = var.private_endpoints == null ? [] : local.private_endpoints
-    content {
-      endpoint_resource_id = azurerm_private_endpoint.this[private_link_access.value].id
-      endpoint_tenant_id   = data.azurerm_client_config.this.tenant_id
-    }
-
-  }
-
   dynamic "timeouts" {
     for_each = var.network_rules.timeouts == null ? [] : [var.network_rules.timeouts]
     content {
