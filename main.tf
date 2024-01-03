@@ -212,6 +212,7 @@ resource "azurerm_storage_account" "this" {
       index_document     = static_website.value.index_document
     }
   }
+
   dynamic "timeouts" {
     for_each = var.timeouts == null ? [] : [var.timeouts]
     content {
@@ -497,9 +498,7 @@ resource "azurerm_storage_share" "this" {
   }
 }
 
-// Resource Block for Diagnostic Settings
-
-
+# Role Assignment for storage account
 resource "azurerm_role_assignment" "this" {
   for_each                               = var.role_assignments
   scope                                  = azurerm_storage_account.this.id
@@ -513,7 +512,7 @@ resource "azurerm_role_assignment" "this" {
 }
 
 # Resource Block for Locks #TODO Should complete the locks with dependant resources.
-resource "azurerm_management_lock" "this-storage_account" {
+resource "azurerm_management_lock" "this_storage_account" {
   count      = var.lock.kind != "None" ? 1 : 0
   name       = coalesce(var.lock.name, "lock-${var.name}")
   scope      = azurerm_storage_account.this.id

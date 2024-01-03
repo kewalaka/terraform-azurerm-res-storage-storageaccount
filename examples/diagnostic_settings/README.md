@@ -162,18 +162,6 @@ module "this" {
       }
     }
   }
-
-  table_properties = {
-    diagnostic_settings = {
-      table = {
-        name                       = "diag"
-        log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-        category_group             = ["audit", "alllogs"]
-        metric_categories          = ["AllMetrics"]
-      }
-    }
-  }
-
   share_properties = {
     diagnostic_settings = {
       share = {

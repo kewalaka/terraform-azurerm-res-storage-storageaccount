@@ -45,7 +45,7 @@ The following resources are used by this module:
 
 - [azapi_resource.containers](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
 - [azurerm_key_vault_access_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) (resource)
-- [azurerm_management_lock.this-storage_account](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
+- [azurerm_management_lock.this_storage_account](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
 - [azurerm_private_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) (resource)
 - [azurerm_private_endpoint_application_security_group_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint_application_security_group_association) (resource)
 - [azurerm_resource_group_template_deployment.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) (resource)
@@ -312,7 +312,12 @@ Default: `null`
 
 ### <a name="input_customer_managed_key"></a> [customer\_managed\_key](#input\_customer\_managed\_key)
 
-Description: required AVM interfaces
+Description:   A set of configurations for customer-managed keys in Azure Key Vault. This variable allows you to specify the details of a customer-managed key to be used for encryption in various Azure services.
+
+  - `key_vault_resource_id` - (Required) The resource ID of the Azure Key Vault containing the customer-managed key.
+  - `key_name` - (Required) The name of the customer-managed key in the Azure Key Vault.
+  - `key_version` - (Optional) The version of the customer-managed key to be used.
+  - `user_assigned_identity_resource_id` - (Optional) The resource ID of the user-assigned managed identity that will be used to access the customer-managed key.
 
 Type:
 
@@ -566,7 +571,10 @@ Default: `{}`
 
 ### <a name="input_managed_identities"></a> [managed\_identities](#input\_managed\_identities)
 
-Description: n/a
+Description:   Configurations for managed identities in Azure. This variable allows you to specify both system-assigned and user-assigned managed identities for resources that support identity-based authentication.
+
+  - `system_assigned` - (Optional) A boolean flag indicating whether to enable the system-assigned managed identity. Defaults to `false`.
+  - `user_assigned_resource_ids` - (Optional) A set of user-assigned managed identity resource IDs to be associated with the resource.
 
 Type:
 
@@ -1061,62 +1069,6 @@ Default: `null`
 Description: (Optional) The encryption type of the table service. Possible values are `Service` and `Account`. Changing this forces a new resource to be created. Default value is `Service`.
 
 Type: `string`
-
-Default: `null`
-
-### <a name="input_table_properties"></a> [table\_properties](#input\_table\_properties)
-
-Description:
----
-`cors_rule` block supports the following:
-- `allowed_headers` - (Required) A list of headers that are allowed to be a part of the cross-origin request.
-- `allowed_methods` - (Required) A list of HTTP methods that are allowed to be executed by the origin. Valid options are `DELETE`, `GET`, `HEAD`, `MERGE`, `POST`, `OPTIONS`, `PUT` or `PATCH`.
-- `allowed_origins` - (Required) A list of origin domains that will be allowed by CORS.
-- `exposed_headers` - (Required) A list of response headers that are exposed to CORS clients.
-- `max_age_in_seconds` - (Required) The number of seconds the client should cache a preflight response.
-
----
-`diagnostic_settings` block supports the following:
-- `name` - (Optional) The name of the diagnostic setting. Defaults to `null`.
-- `log_categories` - (Optional) A set of log categories to enable. Defaults to an empty set.
-- `log_groups` - (Optional) A set of log groups to enable. Defaults to `["allLogs"]`.
-- `metric_categories` - (Optional) A set of metric categories to enable. Defaults to `["AllMetrics"]`.
-- `log_analytics_destination_type` - (Optional) The destination type for log analytics. Defaults to `"Dedicated"`.
-- `workspace_resource_id` - (Optional) The resource ID of the Log Analytics workspace. Defaults to `null`.
-- `resource_id` - (Optional) The resource ID of the target resource for diagnostics. Defaults to `null`.
-- `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the Event Hub authorization rule. Defaults to `null`.
-- `event_hub_name` - (Optional) The name of the Event Hub. Defaults to `null`.
-- `marketplace_partner_resource_id` - (Optional) The resource ID of the marketplace partner. Defaults to `null`.
-
----
-`retention_policy` block supports the following:
-- `days` - (Optional) Specifies the number of days that the `azurerm_shares` should be retained, between `1` and `365` days. Defaults to `7`.
-
-Type:
-
-```hcl
-object({
-    cors_rule = optional(list(object({
-      allowed_headers    = list(string)
-      allowed_methods    = list(string)
-      allowed_origins    = list(string)
-      exposed_headers    = list(string)
-      max_age_in_seconds = number
-    })))
-    diagnostic_settings = optional(map(object({
-      name                                     = optional(string, null)
-      log_categories                           = optional(set(string), [])
-      log_groups                               = optional(set(string), ["allLogs"])
-      metric_categories                        = optional(set(string), ["AllMetrics"])
-      log_analytics_destination_type           = optional(string, "Dedicated")
-      workspace_resource_id                    = optional(string, null)
-      resource_id                              = optional(string, null)
-      event_hub_authorization_rule_resource_id = optional(string, null)
-      event_hub_name                           = optional(string, null)
-      marketplace_partner_resource_id          = optional(string, null)
-    })), {})
-  })
-```
 
 Default: `null`
 

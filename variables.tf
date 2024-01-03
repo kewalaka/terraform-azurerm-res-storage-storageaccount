@@ -39,7 +39,7 @@ variable "tags" {
   default     = {}
 }
 
-//required AVM interfaces
+# required AVM interfaces
 variable "customer_managed_key" {
   type = object({
     key_vault_resource_id              = optional(string, null)
@@ -47,7 +47,15 @@ variable "customer_managed_key" {
     key_version                        = optional(string, null)
     user_assigned_identity_resource_id = optional(string, null)
   })
-  default = {}
+  default     = {}
+  description = <<DESCRIPTION
+  A set of configurations for customer-managed keys in Azure Key Vault. This variable allows you to specify the details of a customer-managed key to be used for encryption in various Azure services.
+
+  - `key_vault_resource_id` - (Required) The resource ID of the Azure Key Vault containing the customer-managed key.
+  - `key_name` - (Required) The name of the customer-managed key in the Azure Key Vault.
+  - `key_version` - (Optional) The version of the customer-managed key to be used.
+  - `user_assigned_identity_resource_id` - (Optional) The resource ID of the user-assigned managed identity that will be used to access the customer-managed key.
+DESCRIPTION
 }
 
 variable "diagnostic_settings" {
@@ -114,7 +122,13 @@ variable "managed_identities" {
     system_assigned            = optional(bool, false)
     user_assigned_resource_ids = optional(set(string), [])
   })
-  default = {}
+  default     = {}
+  description = <<DESCRIPTION
+  Configurations for managed identities in Azure. This variable allows you to specify both system-assigned and user-assigned managed identities for resources that support identity-based authentication.
+
+  - `system_assigned` - (Optional) A boolean flag indicating whether to enable the system-assigned managed identity. Defaults to `false`.
+  - `user_assigned_resource_ids` - (Optional) A set of user-assigned managed identity resource IDs to be associated with the resource.
+DESCRIPTION
 }
 
 # specific DNS information for storage account private endpoints
