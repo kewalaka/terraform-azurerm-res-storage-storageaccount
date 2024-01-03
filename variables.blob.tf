@@ -1,4 +1,4 @@
-variable "storage_container" {
+variable "containers" {
   type = map(object({
     public_access = optional(string, "None")
     metadata      = optional(map(string))
@@ -37,7 +37,7 @@ EOT
   nullable    = false
 }
 
-variable "storage_account_immutability_policy" {
+variable "immutability_policy" {
   type = object({
     allow_protected_append_writes = bool
     period_since_creation_in_days = number
@@ -51,13 +51,13 @@ variable "storage_account_immutability_policy" {
 EOT
 }
 
-variable "storage_account_is_hns_enabled" {
+variable "is_hns_enabled" {
   type        = bool
   default     = null
   description = "(Optional) Is Hierarchical Namespace enabled? This can be used with Azure Data Lake Storage Gen 2 ([see here for more information](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-quickstart-create-account/)). Changing this forces a new resource to be created."
 }
 
-variable "storage_account_blob_properties" {
+variable "blob_properties" {
   type = object({
     change_feed_enabled           = optional(bool)
     change_feed_retention_in_days = optional(number)
@@ -77,6 +77,18 @@ variable "storage_account_blob_properties" {
     delete_retention_policy = optional(object({
       days = optional(number)
     }))
+    diagnostic_settings = optional(map(object({
+      name                                     = optional(string, null)
+      log_categories                           = optional(set(string), [])
+      log_groups                               = optional(set(string), ["allLogs"])
+      metric_categories                        = optional(set(string), ["AllMetrics"])
+      log_analytics_destination_type           = optional(string, "Dedicated")
+      workspace_resource_id                    = optional(string, null)
+      resource_id                              = optional(string, null)
+      event_hub_authorization_rule_resource_id = optional(string, null)
+      event_hub_name                           = optional(string, null)
+      marketplace_partner_resource_id          = optional(string, null)
+    })), {})
     restore_policy = optional(object({
       days = number
     }))
@@ -104,6 +116,19 @@ variable "storage_account_blob_properties" {
  ---
  `delete_retention_policy` block supports the following:
  - `days` - (Optional) Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`.
+
+ ---
+ `diagnostic_settings` block supports the following:
+ - `name` - (Optional) The name of the diagnostic setting. Defaults to `null`.
+ - `log_categories` - (Optional) A set of log categories to enable. Defaults to an empty set.
+ - `log_groups` - (Optional) A set of log groups to enable. Defaults to `["allLogs"]`.
+ - `metric_categories` - (Optional) A set of metric categories to enable. Defaults to `["AllMetrics"]`.
+ - `log_analytics_destination_type` - (Optional) The destination type for log analytics. Defaults to `"Dedicated"`.
+ - `workspace_resource_id` - (Optional) The resource ID of the Log Analytics workspace. Defaults to `null`.
+ - `resource_id` - (Optional) The resource ID of the target resource for diagnostics. Defaults to `null`.
+ - `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the Event Hub authorization rule. Defaults to `null`.
+ - `event_hub_name` - (Optional) The name of the Event Hub. Defaults to `null`.
+ - `marketplace_partner_resource_id` - (Optional) The resource ID of the marketplace partner. Defaults to `null`.
 
  ---
  `restore_policy` block supports the following:

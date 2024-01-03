@@ -1,6 +1,6 @@
 variable "enable_telemetry" {
   type        = bool
-  default     = false
+  default     = true
   description = <<DESCRIPTION
 This variable controls whether or not telemetry is enabled for the module.
 For more information see https://aka.ms/avm/telemetryinfo.
@@ -18,7 +18,7 @@ variable "location" {
   type        = string
   default     = null
   description = <<DESCRIPTION
-Azure region where the resource should be deployed.  
+Azure region where the resource should be deployed.
 If null, the location will be inferred from the resource group location.
 DESCRIPTION
 }
@@ -81,7 +81,7 @@ variable "diagnostic_settings" {
   }
   description = <<DESCRIPTION
   A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-  
+
   - `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
   - `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
   - `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
