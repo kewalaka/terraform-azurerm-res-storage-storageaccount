@@ -1,25 +1,17 @@
 data "azurerm_client_config" "current" {}
 
-resource "random_string" "key_vault_prefix" {
-  length  = 6
-  numeric = false
-  special = false
-  upper   = false
-}
-
-module "public_ip" {
-  source  = "lonegunmanb/public-ip/lonegunmanb"
-  version = "0.1.0"
+data "http" "ip" {
+  url = "https://ifconfig.me/ip"
 }
 
 locals {
   # We cannot use coalesce here because it's not short-circuit and public_ip's index will cause error
-  public_ip = var.key_vault_firewall_bypass_ip_cidr == null ? module.public_ip.public_ip : var.key_vault_firewall_bypass_ip_cidr
+  public_ip = var.key_vault_firewall_bypass_ip_cidr == null ? data.http.ip.response_body : var.key_vault_firewall_bypass_ip_cidr
 }
 
 resource "azurerm_key_vault" "storage_vault" {
   location                    = azurerm_resource_group.this.location
-  name                        = "${random_string.key_vault_prefix.result}-storage-keyvault"
+  name                        = module.naming.key_vault.name_unique
   resource_group_name         = azurerm_resource_group.this.name
   sku_name                    = "premium"
   tenant_id                   = data.azurerm_client_config.current.tenant_id

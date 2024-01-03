@@ -1,31 +1,5 @@
-terraform {
-  required_version = ">= 1.3"
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.63.0, < 4.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.3.2, < 4.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {
-    resource_group {
-      prevent_deletion_if_contains_resources = false
-    }
-  }
-  skip_provider_registration = true
-  storage_use_azuread        = false
-}
-
 resource "random_pet" "this" {
   length = 1
-
 }
 
 resource "azurerm_resource_group" "this" {
@@ -50,20 +24,16 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-module "this" {
-  #checkov:skip=CKV_AZURE_34:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV_AZURE_35:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_20:It's a known issue that Checkov cannot work prefect along with module
-  #checkov:skip=CKV2_AZURE_21:It's a known issue that Checkov cannot work prefect along with module
+module "storage_account" {
   source = "../.."
+  # source  = "kewalaka/res-storage-storageaccount/azurerm"
+  # version = "0.1.0"
 
   account_replication_type      = "LRS"
   account_tier                  = "Standard"
   account_kind                  = "StorageV2"
-  location                      = azurerm_resource_group.this.location
   name                          = module.naming.storage_account.name_unique
   resource_group_name           = azurerm_resource_group.this.name
-  min_tls_version               = "TLS1_2"
   shared_access_key_enabled     = true
   public_network_access_enabled = true
 
@@ -87,8 +57,8 @@ module "this" {
     type = "UserAssigned"
   }
   customer_managed_key = {
-    key_name     = azurerm_key_vault_key.storage_key.name
-    key_vault_id = azurerm_key_vault.storage_vault.id
+    key_name              = azurerm_key_vault_key.storage_key.name
+    key_vault_resource_id = azurerm_key_vault.storage_vault.id
   }
   containers = {
     blob_container1 = {

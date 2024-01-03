@@ -319,14 +319,14 @@ Type:
 
 ```hcl
 object({
-    key_vault_resource_id              = optional(string, null)
-    key_name                           = optional(string, null)
+    key_vault_resource_id              = string
+    key_name                           = string
     key_version                        = optional(string, null)
     user_assigned_identity_resource_id = optional(string, null)
   })
 ```
 
-Default: `{}`
+Default: `null`
 
 ### <a name="input_default_to_oauth_authentication"></a> [default\_to\_oauth\_authentication](#input\_default\_to\_oauth\_authentication)
 
